@@ -11,7 +11,7 @@ from features.exp.card import create_image
 def register(client: discord.Client, tree: discord.app_commands.CommandTree):
     exp_obj = features.exp.count.experience(client)
 
-    @discord.app_commands.command(name="level", description="現在の経験値量を確認できます")
+    @discord.app_commands.command(name="level", description="現在の経験値量を確認できます(DMではuserを指定しないで下さい)")
     async def send_level(interaction: discord.Interaction, user: discord.Member | discord.User = None):
 
         # botなら
