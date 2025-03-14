@@ -1,7 +1,8 @@
 import json
-from config import BACKUP_CHANNEL_ID, BACKUP_CYCLE_SEC, BACKUP_CHANNEL_ID
-import asyncio
+from config import BACKUP_CHANNEL_ID, BACKUP_CHANNEL_ID
 import os
+import discord
+import io
 
 is_register_uploaded = False
 
@@ -37,8 +38,17 @@ def load_data() -> dict:
     with open('./data.json', 'r') as f:
         return json.load(f)
 
+
 async def upload_data(client, data) -> None:
     channel = client.get_channel(BACKUP_CHANNEL_ID)
-    data = "```json\n" + json.dumps(data) + "\n```"
+    
     if channel:
-        await channel.send(data)
+        # JSONデータを文字列に変換
+        json_data = json.dumps(data, indent=4)
+        
+        # `io.StringIO` を使って一時的なファイルとして扱う
+        file = discord.File(io.StringIO(json_data), filename="backup.json")
+        
+        # ファイルを送信
+        await channel.send(file=file)
+
