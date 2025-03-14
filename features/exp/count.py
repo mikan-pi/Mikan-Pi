@@ -42,6 +42,7 @@ class experience:
                 # かつ、データ上のlevelが-1でないならDMにメッセージを送る
                 # (参加時にDMを即座に飛ばしたくない)
                 if self.data.data["userdata"][str(member.id)]["level"] != -1:
+                    self.logger.info(f"member:{member.name} send DM")
                     await member.send(f"Miレベルが{level}になりました。", file=discord.File(await create_image(level, self, member), filename="level.png"))
                 append = self.data.data["level_roles"].get(str(level))
                 append = discord.utils.get(member.guild.roles, id=append)
