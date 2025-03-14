@@ -4,17 +4,17 @@ import requests
 from io import BytesIO
 import config
 
-async def create_image(level, exp_obj, usersobj: discord.Interaction | discord.Member):
+async def create_image(level, exp_obj, usersobj: discord.User | discord.Member):
     if isinstance(usersobj, discord.Interaction):
         user = usersobj.user.id
         user_name = usersobj.user.name
         user_icon_url = usersobj.user.display_avatar.url or usersobj.user.default_avatar.url
-    elif isinstance(usersobj, discord.Member):
+    elif isinstance(usersobj, discord.Member) or isinstance(usersobj, discord.User):
         user = usersobj.id
         user_name = usersobj.name
         user_icon_url = usersobj.display_avatar.url or usersobj.default_avatar.url
     else:
-        raise TypeError("usersobj must be discord.Interaction or discord.Member")
+        raise TypeError("usersobj must be discord.Interaction or discord.Member or discord.User")
 
     # UIを取得
     ui_image = Image.open(f"./public/pictures/level/{level}.png")

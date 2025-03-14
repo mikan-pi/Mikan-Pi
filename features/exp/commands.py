@@ -12,10 +12,20 @@ def register(client: discord.Client, tree: discord.app_commands.CommandTree):
     exp_obj = features.exp.count.experience(client)
 
     @discord.app_commands.command(name="level", description="現在の経験値量を確認できます")
-    async def send_level(interaction: discord.Interaction, user: discord.Member = None):
+    async def send_level(interaction: discord.Interaction, user: discord.Member | discord.User = None):
+
+        # botなら
+        if user and user.bot:
+            await interaction.response.send_message("botにはレベルが存在しません", ephemeral=True)
+            return
 
         # 自分を取得
         member = interaction.user.id if not user else user.id
+
+        # dmで引数付きなら拒否
+        if interaction.guild is None and user is not None:
+            await interaction.response.send_message("DMではuserを指定しないでください", ephemeral=True)
+            return
 
         # 自身のレベルを取得
         level = await exp_obj.get_level(member)
