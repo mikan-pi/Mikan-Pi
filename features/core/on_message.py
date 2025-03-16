@@ -10,7 +10,7 @@ def register(client: discord.Client, tree: discord.app_commands.CommandTree):
     exp = features.exp.count.experience(client)
     @client.event
     async def on_message(message: discord.Message):
-        if message.author.bot: # botの場合はスキップ
+        if message.author.bot and message.webhook_id is None: # botの場合はスキップ
             return
         # データが正常にロードされる前なら無視
         if not exp.data.isloaded:

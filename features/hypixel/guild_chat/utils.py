@@ -14,9 +14,9 @@ logger = MainLogger()
 
 def parse_msg(msg: str):
     # msgを解析
-    msg = msg.split("\n")
-    name = msg[0]
-    msg = msg[1:]
+    msg_per_user = msg.split("\n\n")
+    msgs = list(map(lambda x: list(x.split("\n")),msg_per_user))
+    name, msg = list(map(lambda x: x[0], msgs)), list(map(lambda x: x[1:], msgs))
 
     return name, msg
 
