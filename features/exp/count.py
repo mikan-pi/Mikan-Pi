@@ -43,7 +43,7 @@ class experience:
                 # (参加時にDMを即座に飛ばしたくない)
                 if self.data.data["userdata"][str(member.id)]["level"] != -1:
                     self.logger.info(f"member:{member.name} send DM")
-                    await member.send(f"Miレベルが{level}になりました。", file=discord.File(await create_image(level, self, member), filename="level.png"))
+                    await member.send(f"Miレベルが{level}になりました。サーバーで報告してみましょう！", file=discord.File(await create_image(level, self, member), filename="level.png"))
                 append = self.data.data["level_roles"].get(str(level))
                 append = discord.utils.get(member.guild.roles, id=append)
                 if append:

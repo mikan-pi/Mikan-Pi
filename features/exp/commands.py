@@ -5,14 +5,17 @@ import requests
 from io import BytesIO
 import config
 from features.exp.card import create_image
+from public.logging.logger import MainLogger
 
 
 
 def register(client: discord.Client, tree: discord.app_commands.CommandTree):
     exp_obj = features.exp.count.experience(client)
+    logger = MainLogger()
 
     @discord.app_commands.command(name="level", description="現在の経験値量を確認できます(DMではuserを指定しないで下さい)")
     async def send_level(interaction: discord.Interaction, user: discord.Member | discord.User = None):
+        logger.info(f"level command called by {interaction.user.id}")
 
         # botなら
         if user and user.bot:
@@ -29,6 +32,8 @@ def register(client: discord.Client, tree: discord.app_commands.CommandTree):
 
         # 自身のレベルを取得
         level = await exp_obj.get_level(member)
+
+        logger.info(f"level: {level}")
 
         # 無効ならエラーを返す
         if level == "Disabled":
