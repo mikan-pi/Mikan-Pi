@@ -1,5 +1,6 @@
 import features.exp.commands
 import features.exp.count
+import features.hypixel.guild_chat.commands
 import features.join_member
 from features.core.make_intent import make_intent
 from features.core.run import run
@@ -7,9 +8,13 @@ from bot_token import BOT_TOKEN
 import features.core.on_ready
 import features.core.make_tree
 import features.core.on_message
+import features.hypixel.guild_chat.commands
+import features.data
 
 if __name__ == "__main__":
     client = make_intent()
+    # clientの登録 & データの登録
+    features.data.BotData().set_client(client)
     # treeの作成
     tree = features.core.make_tree.run(client)
     # bot起動時実行関数の登録
@@ -19,6 +24,8 @@ if __name__ == "__main__":
 
     # コマンドの登録
     features.exp.commands.register(client, tree)
+    features.hypixel.guild_chat.commands.register(client, tree)
+
 
     # メンバー参加時アクションの登録
     features.join_member.setup(client)
