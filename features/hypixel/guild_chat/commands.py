@@ -16,10 +16,11 @@ PATH_TO_MOD_JSON = "./features/hypixel/guild_chat/mod/config.json"
 PATH_TO_REPOS = "./features/hypixel/guild_chat/repos.zip"
 
 def register(client: discord.Client, tree: discord.app_commands.CommandTree):
-    @discord.app_commands.command(name="want-hypixel-guild-mod", description="自身のhypixel-guild chatをdiscordに表示するmodを提供します。")
-    async def send_mod(interaction: discord.Interaction):
-        # Discordに送信
-        await interaction.user.send(file=discord.File(fp=PATH_TO_REPOS, filename="mod.zip"))
-        await interaction.response.send_message("modをDMに送りました。", ephemeral=True)
+    # @discord.app_commands.command(name="want-hypixel-guild-mod", description="自身のhypixel-guild chatをdiscordに表示するmodを提供します。")
+    # async def send_mod(interaction: discord.Interaction):
+    #     # Discordに送信
+    #     await interaction.user.send(file=discord.File(fp=PATH_TO_REPOS, filename="mod.zip"))
+    #     await interaction.response.send_message("modをDMに送りました。", ephemeral=True)
 
-    tree.add_command(send_mod)
+    # tree.add_command(send_mod)
+    pass
