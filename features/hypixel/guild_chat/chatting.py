@@ -13,16 +13,20 @@ from features.hypixel.guild_chat.utils import parse_msg, get_mcid, mcid_to_disco
 from discord.ext import tasks
 from hypixel_token import HYPIXEL_TOKEN
 import requests
+from public.logging.logger import MainLogger
 
 
 before_time_stamp = None
+logger = MainLogger()
 
 
 @tasks.loop(seconds=HYPIXEL_FETCH_CYCLE)
 async def fetch_hypixel_guild_chat():
     # 定期的にAPIを送る
     url = f"https://api.hypixel.net/v2/skyblock/news?key={HYPIXEL_TOKEN}"
-    requests.get(url)
+    r = requests.get(url)
+    logger.info(f"fetch hypixel : {r.status_code}")
+    
 
 async def read_and_write(client: discord.Client, tree: discord.app_commands.CommandTree, message: discord.Message):
     exp = features.exp.count.experience(client)
