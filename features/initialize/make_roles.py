@@ -21,4 +21,5 @@ async def run(client: discord.client):
             # ロールidを追加
             data.data["level_roles"][str(i)] = role.id
 
+
     await data.set_data()

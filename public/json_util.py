@@ -7,8 +7,6 @@ import io
 is_register_uploaded = False
 
 def init_data(Data  = {
-        "userdata": {}, # ユーザが持つ経験値などの情報
-        "join_order": 1 # 何人目の参加者かの情報
     }) -> dict:
     
     # ./data.json
