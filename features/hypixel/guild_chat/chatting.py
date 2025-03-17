@@ -24,7 +24,8 @@ async def read_and_write(client: discord.Client, tree: discord.app_commands.Comm
     names,msgs = parse_msg(message.content)
     
     for name, msg in zip(names, msgs):
-        embed = public.embed.Embed.Default(title=name.replace("_", "\\_").replace("*", "\\*"), description="\n".join(msg).replace("_", "\\_").replace("*", "\\*"))
+        embed = public.embed.Embed.Default(description="\n".join(msg).replace("_", "\\_").replace("*", "\\*"))
+        embed.set_thumbnail(url=None)
         mcid = get_mcid(name)
         discord_id = None
         if mcid is not None:
@@ -32,11 +33,15 @@ async def read_and_write(client: discord.Client, tree: discord.app_commands.Comm
         if discord_id is not None:
             #discord_idからアイコン・名前を取得
             user = discord.utils.get(message.guild.members, name=discord_id)
-            user_name = user.name
-            user_icon = user.avatar.url if user.avatar else user.default_avatar.url
+            if user is not None:
+                user_name = user.name + f"({name})"
+                user_icon = user.avatar.url if user.avatar else user.default_avatar.url
+                # 誰か分かっていればexpを加算
+                await exp.add_chat_exp(user.id)
+            else:
+                user_name = name + "(hypixelに登録されているdiscordリンク/IDが不正です)"
+                user_icon = None
             embed.set_author(name = user_name, icon_url=user_icon)
-            # 誰か分かっていればexpを加算
-            await exp.add_chat_exp(user.id)
         else:
             embed.set_author(name = name)
         await client.get_channel(HYPIXEL_GUILD_CHAT_SEND_CHANNEL_ID).send(embed=embed)
