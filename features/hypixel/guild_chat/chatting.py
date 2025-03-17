@@ -7,11 +7,22 @@ exp処理を行う
 """
 import discord
 import features.exp.count
-from config import HYPIXEL_GUILD_CHAT_SEND_CHANNEL_ID, HYPIXEL_GUILD_CHAT_WEBHOOK_CHANNEL_ID
+from config import HYPIXEL_GUILD_CHAT_SEND_CHANNEL_ID, HYPIXEL_GUILD_CHAT_WEBHOOK_CHANNEL_ID, HYPIXEL_FETCH_CYCLE
 import public.embed
 from features.hypixel.guild_chat.utils import parse_msg, get_mcid, mcid_to_discord
+from discord.ext import tasks
+from hypixel_token import HYPIXEL_TOKEN
+import requests
+
 
 before_time_stamp = None
+
+
+@tasks.loop(seconds=HYPIXEL_FETCH_CYCLE)
+async def fetch_hypixel_guild_chat():
+    # 定期的にAPIを送る
+    url = f"https://api.hypixel.net/v2/skyblock/news?key={HYPIXEL_TOKEN}"
+    requests.get(url)
 
 async def read_and_write(client: discord.Client, tree: discord.app_commands.CommandTree, message: discord.Message):
     exp = features.exp.count.experience(client)
