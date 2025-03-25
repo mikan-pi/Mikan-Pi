@@ -8,7 +8,7 @@ Mi Server へようこそ！
 少し探索したらサーバー内やMikan PiのDMで/levelを実行してみましょう！
 
 - Hypixel Skyblockをプレイ中の方へ
-ミュートでVCに参加する場合、以下のmodの導入を推奨します -> https://github.com/mikan-pi/chat-module/releases/
+ミュートでVCに参加する場合、以下のmodの導入を推奨(必須ではありません)します -> https://github.com/mikan-pi/chat-module/releases/
 """
 
 def setup(client):
