@@ -3,6 +3,14 @@ import discord
 from features.data import BotData
 from public.embed import Embed
 
+desc = """
+Mi Server へようこそ！
+少し探索したらサーバー内やMikan PiのDMで/levelを実行してみましょう！
+
+- Hypixel Skyblockをプレイ中の方へ
+ミュートでVCに参加する場合、以下のmodの導入を推奨します -> https://github.com/mikan-pi/chat-module/releases/
+"""
+
 def setup(client):
     data = BotData(client)
     @client.event
@@ -17,7 +25,7 @@ def setup(client):
             await data.set_data(items)
             embed = Embed.Default(
                 title=f"Join #{items.get('join_order')}", # 現在の人数を送信
-                description=f"Mi Server へようこそ！\n少し探索したら/levelを実行してみましょう！"
+                description=desc
             )
             embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
             await channel.send(embed=embed)
