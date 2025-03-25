@@ -5,12 +5,15 @@ import discord
 from discord.ext import tasks
 from features.exp.card import create_image
 from public.logging.logger import MainLogger
+import time
 
 class experience:
     def __init__(self,client: discord.Client):
         self.client = client
         self.data = BotData(client)
         self.logger = MainLogger()
+
+        self.sort_objs = {"time-stamp": 0, "data": {}}
     @tasks.loop(seconds=CYCLE_TIME)
     async def register_calc_experience(self):
         # メンバー全員を取得
@@ -84,6 +87,31 @@ class experience:
             await self.data.make_user(member_id)
         self.data.data["userdata"][str(member_id)]["chat_experience"] += EXP_RATE["chat"]
 
+    async def sort(self, cache_time):
+        # 順位順(経験値)にソート
+        # ただし、前回のソートから10分経過していない場合にはソートせず、前回の順位表を返す
+        # データが存在しないなら
+        if not self.data.data["userdata"]:
+            return {}
+        # time-stampとの差がcache_time以上なら
+        if int(time.time()) - self.sort_objs["time-stamp"] > cache_time:
+            self.sort_objs["time-stamp"] = int(time.time())
+            self.data.data["userdata"] = dict(sorted(self.data.data["userdata"].items(), key=lambda x: x[1]["chat_experience"] + x[1]["vc_experience"] + x[1]["role_experience"], reverse=True))
+            self.sort_objs["data"] = self.data.data["userdata"]
+        return self.sort_objs["data"]
+
+    async def get_rank(self,member_id):
+        """
+        サーバー内順位を返す(1-index)
+
+        """
+        member_id = str(member_id)
+        # ソートして自身のキーがいくつ目かを返す
+        sorted_keys = list((await self.sort(cache_time=10 * 60)).keys())
+        for rank, key in enumerate(sorted_keys, start=1):
+            if key == member_id:
+                return rank
+
     async def get_level(self,member_id):
         # userdaraキーが無ければ返す
         if not "userdata" in self.data.data:
@@ -98,3 +126,6 @@ class experience:
         if str(member_id) not in self.data.data["userdata"]:
             return 0
         return self.data.data["userdata"][str(member_id)]["role_experience"], self.data.data["userdata"][str(member_id)]["vc_experience"], self.data.data["userdata"][str(member_id)]["chat_experience"]
+
+    def __len__(self):
+        return len(self.data.data["userdata"])
