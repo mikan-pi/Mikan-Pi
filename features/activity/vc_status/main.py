@@ -26,6 +26,7 @@ def register(client: discord.Client):
     channel_cnt = len(guild.voice_channels)
     channel_per_api_interval = 3
     cycle_time = channel_cnt * 10
+    logger.info(f"vc status update cycle time: {cycle_time}")
     @tasks.loop(seconds=cycle_time)
     async def update_vc_status():
         for vc in guild.voice_channels:  # サーバー内のすべてのVCを取得
