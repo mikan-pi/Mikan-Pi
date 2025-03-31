@@ -2,6 +2,7 @@ import features.exp.commands
 import features.exp.count
 import features.hypixel.guild_chat.commands
 import features.join_member
+import features.core.on_member_remove
 from features.core.make_intent import make_intent
 from features.core.run import run
 from bot_token import BOT_TOKEN
@@ -29,4 +30,6 @@ if __name__ == "__main__":
 
     # メンバー参加時アクションの登録
     features.join_member.setup(client)
+    # メンバー退室時アクションの登録
+    features.core.on_member_remove.register(client)
     run(client, BOT_TOKEN)
