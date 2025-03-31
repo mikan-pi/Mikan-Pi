@@ -5,7 +5,8 @@ from public.logging.logger import MainLogger
 import asyncio
 
 
-priority_games = ["Minecraft", "SkyBlock", "Essential", "SkyClient", "Lunar Client"]
+priority_games = ["Minecraft", "SkyBlock", "Essential", "SkyClient", "Lunar Client", "Dungeons Guide"]
+priority_but_unknown_games = []
 async def check_priority_games(games):
     # 優先ゲームをチェック
     have_preiority = set()
@@ -15,6 +16,11 @@ async def check_priority_games(games):
             if game.startswith(priority_game):
                 will_remove.add(game)
                 have_preiority.add(game)
+                break
+        for priority_game in priority_but_unknown_games:
+            if game.startswith(priority_game):
+                will_remove.add(game)
+                have_preiority.add(priority_games[0])
                 break
     games -= will_remove
     return have_preiority, games

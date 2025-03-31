@@ -7,6 +7,10 @@ import features.exp.count
 import features.data
 import itertools
 
+class default_user:
+    def __init__(self):
+        self.name = "Invalid User"
+
 leaderboard_image = Image.open(f"./public/pictures/leaderboard/panel.png")
 data = features.data.BotData()
 async def _leaderboard(exp_obj: features.exp.count.experience, lower_rank: int, upper_rank: int):
@@ -35,8 +39,8 @@ async def _leaderboard(exp_obj: features.exp.count.experience, lower_rank: int, 
         exp = sum(await exp_obj.get_exp(user))
         rank = lower_rank + i + 1
         user = discord.utils.get(data.client.get_guild(config.GUILD_ID).members, id=user)
+        if user is None: user = default_user()
         user_name = user.name
-        user_icon = user.avatar.url if user.avatar else user.default_avatar.url 
         # ユーザー情報を画像に
         # rankを貼付
         bbox = draw.textbbox((0, 0), str(rank), font=font)
