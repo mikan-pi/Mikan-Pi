@@ -46,7 +46,7 @@ async def mcid_to_discord(client: discord.Client, uuid: str):
 
 def get_hypixel_discord(uuid: str):
     url = f"https://api.hypixel.net/player?key={HYPIXEL_TOKEN}&uuid={uuid}"
-    logger.info("get_api(uuid to discord) : " + uuid + " -> " + url)
+    logger.info("get_api(uuid to discord) : " + uuid + " -> " + f"https://api.hypixel.net/player?key=&uuid={uuid}")
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
