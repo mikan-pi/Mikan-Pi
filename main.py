@@ -11,6 +11,9 @@ import features.core.make_tree
 import features.core.on_message
 import features.hypixel.guild_chat.commands
 import features.data
+import features.vc
+import features.vc.core
+import features.vc.core.commands
 
 if __name__ == "__main__":
     client = make_intent()
@@ -26,6 +29,7 @@ if __name__ == "__main__":
     # コマンドの登録
     features.exp.commands.register(client, tree)
     features.hypixel.guild_chat.commands.register(client, tree)
+    features.vc.core.commands.register(client, tree)
 
 
     # メンバー参加時アクションの登録

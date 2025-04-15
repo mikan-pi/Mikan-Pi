@@ -1,3 +1,5 @@
-discord
+discord[voice]
 pillow
 requests
+aiohttp
+pynacl
