@@ -1,4 +1,5 @@
 import features.initialize.file
+import features.initialize.make_roles
 import features.exp.count
 import discord
 import features.hypixel.guild_chat.chatting
@@ -14,3 +15,5 @@ async def run(client: discord.Client, tree: discord.app_commands.CommandTree):
     features.exp.count.experience(client).register_calc_vc_experience.start()
     features.hypixel.guild_chat.chatting.fetch_hypixel_guild_chat.start()
     features.activity.vc_status.main.register(client)
+    # ロールの作成
+    await features.initialize.make_roles.create_if_not_exist(client)
