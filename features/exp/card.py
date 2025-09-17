@@ -31,14 +31,17 @@ async def create_image(level, exp_obj, usersobj: discord.User | discord.Member):
     # アイコンをUIに貼付
     ui_image.paste(user_picture, (50, 50), user_picture)
     draw = ImageDraw.Draw(ui_image)
-    font = ImageFont.truetype("./public/fonts/KFHIMAJI.OTF", 40)
+    font_size = 40
+    font = ImageFont.truetype("./public/fonts/KFHIMAJI.OTF", font_size)
     draw.text((150, 75), user_name, fill=(60, 60, 60, 255), font=font)
 
     # 現在レベルを貼付
+    # digit_offset = int(font_size // 2)
     level_picture = Image.new("RGBA", (50,50), (0, 0, 0, 0))
     draw = ImageDraw.Draw(level_picture)
-    draw.text((0, 0), str(level), fill=(255, 255, 255, 255),font=font)
-    ui_image.paste(level_picture, (257, 190), level_picture)
+    draw.text((25, 25), str(level), fill=(255, 255, 255, 255),font=font, anchor="mm")
+    # level_digits = len(str(level)) 
+    ui_image.paste(level_picture, (245, 185), level_picture)
 
     # 経験値を取得
     role, vc, chat = await exp_obj.get_exp(user)
@@ -50,8 +53,18 @@ async def create_image(level, exp_obj, usersobj: discord.User | discord.Member):
     draw = ImageDraw.Draw(exp_picture)
     exp = role + vc + chat
     need = config.LEVEL_EXP[level + 1]
+    # 文字サイズがあふれるので調整
     if level != config.MAX_LEVEL:
-        draw.text((0, 0), f"{exp}/{need}", fill=exp_color,font=font)
+        if level < 9:
+            draw.text((0, 0), f"{exp}/{need}", fill=exp_color,font=font)
+        # 領域があふれるので調整
+        elif level < 100:
+            minifont = ImageFont.truetype("./public/fonts/KFHIMAJI.OTF", 30)
+            draw.text((125, 5), f"{exp}", fill=exp_color,font=minifont,anchor="rt")
+            draw.text((130, 0), f"/", fill=exp_color,font=font)
+            draw.text((155, 10), f"{need}", fill=exp_color,font=minifont)
+        else:
+            draw.text((0, 0), f"{exp}", fill=exp_color,font=font)
     else:
         draw.text((0, 0), f"{exp}", fill=exp_color,font=font)
     ui_image.paste(exp_picture, (320, 190), exp_picture)
