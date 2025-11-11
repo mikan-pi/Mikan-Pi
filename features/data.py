@@ -20,10 +20,23 @@ class BotData():
     def set_client(self, client: discord.Client):
         self.client = client
 
+    def data_recover(self):
+        for user in self.data["userdata"].keys():
+            if not self.data["userdata"][user].get("other_experience"):
+                self.data["userdata"][user]["other_experience"] = 0
+            if not self.data["userdata"][user].get("vc_experience"):
+                self.data["userdata"][user]["vc_experience"] = 0
+            if not self.data["userdata"][user].get("chat_experience"):
+                self.data["userdata"][user]["chat_experience"] = 0
+            if not self.data["userdata"][user].get("role_experience"):
+                self.data["userdata"][user]["role_experience"] = 0
+
     # データの読み出しor作成
     def load(self):
         self.data = load_data()
         self.isloaded = True
+        # 要素に欠けがあれば追加する
+        self.data_recover()
         return self.data
     # データ全体を返す
     async def get_data(self):
@@ -47,6 +60,7 @@ class BotData():
                 "role_experience": 0,
                 "vc_experience": 0,
                 "chat_experience": 0,
+                "other_experience": 0,
                 "level": -1,
             }
             await self.set_data(self.data)
