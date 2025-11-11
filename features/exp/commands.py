@@ -13,6 +13,7 @@ from public.logging.logger import MainLogger
 def register(client: discord.Client, tree: discord.app_commands.CommandTree):
     exp_obj = features.exp.count.experience(client)
     logger = MainLogger()
+    data = features.exp.count.BotData(client)
 
     @discord.app_commands.command(name="leaderboard", description="経験値ランキングを確認できます(引数を指定しない場合自身の周辺を表示します)")
     async def send_leaderboard(interaction: discord.Interaction, rank: int | None = None):
@@ -66,5 +67,18 @@ def register(client: discord.Client, tree: discord.app_commands.CommandTree):
         # メッセージとして画像を送信
         await interaction.response.send_message(file=discord.File(byte_io, filename="level.png"))
 
+    
+    @discord.app_commands.command(name="add_other_exp", description="経験値を追加します")
+    async def append_other_exp(interaction: discord.Interaction, member: discord.Member, exp: int):
+        member_id = member.id
+        # ユーザが管理者でなければ、return
+        logger.info(f"add_other_exp command called by {interaction.user.id}")
+        if not interaction.user.id in config.ADMIN_USERS:
+            return
+        await exp_obj.add_other_exp(member_id, exp)
+        logger.info(f"add_other_exp {member.name} {exp}")
+        await interaction.response.send_message("経験値を追加しました", ephemeral=True)
+
     tree.add_command(send_leaderboard)
     tree.add_command(send_level)
+    tree.add_command(append_other_exp)

@@ -44,14 +44,14 @@ async def create_image(level, exp_obj, usersobj: discord.User | discord.Member):
     ui_image.paste(level_picture, (245, 185), level_picture)
 
     # 経験値を取得
-    role, vc, chat = await exp_obj.get_exp(user)
+    role, vc, chat, other = await exp_obj.get_exp(user)
 
     exp_color = (60, 60, 60, 255)
 
     # 現在経験値 / 必要経験値を貼付
     exp_picture = Image.new("RGBA", (300,50), (0, 0, 0, 0))
     draw = ImageDraw.Draw(exp_picture)
-    exp = role + vc + chat
+    exp = role + vc + chat + other
     need = config.LEVEL_EXP[level + 1]
     # 文字サイズがあふれるので調整
     if level != config.MAX_LEVEL:
@@ -74,8 +74,9 @@ async def create_image(level, exp_obj, usersobj: discord.User | discord.Member):
     draw = ImageDraw.Draw(picture)
     font = ImageFont.truetype("./public/fonts/KFHIMAJI.OTF", 15)
     draw.text((0, 0), str(vc).rjust(6), fill=exp_color,font=font)
-    draw.text((0, 30), str(chat).rjust(6), fill=exp_color,font=font)
-    draw.text((0, 60), str(role).rjust(6), fill=exp_color,font=font)
+    draw.text((0, 20), str(chat).rjust(6), fill=exp_color,font=font)
+    draw.text((0, 40), str(role).rjust(6), fill=exp_color,font=font)
+    draw.text((0, 60), str(other).rjust(6), fill=exp_color,font=font)
     ui_image.paste(picture, (100, 175), picture)
 
 

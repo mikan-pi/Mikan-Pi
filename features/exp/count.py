@@ -1,4 +1,4 @@
-from config import GUILD_ID, EXP_RATE, LEVEL_EXP, CYCLE_TIME, VC_EXP_CYCLE_SEC, EXP_IGNORE_ROLES
+from config import GUILD_ID, EXP_RATE, LEVEL_EXP, CYCLE_TIME, VC_EXP_CYCLE_SEC, EXP_IGNORE_ROLES, ADMIN_USERS
 from features.data import BotData
 import asyncio
 import discord
@@ -53,17 +53,21 @@ class experience:
                 append = self.data.data["level_roles"].get(str(level))
                 append = discord.utils.get(member.guild.roles, id=append)
                 if append:
+                    # どのロールが付与されているか分からないので全部見る
+                    for role in member.roles:
+                        if role.id in self.data.data["level_roles"].values():
+                            await member.remove_roles(role)
                     # ロールを付与
                     await member.add_roles(append)
-                    # 不要になったロールを削除
-                    remove = self.data.data["level_roles"].get(str(level - 1))
-                    remove = discord.utils.get(member.guild.roles, id=remove)
-                    if remove:
-                        await member.remove_roles(remove)
-                    remove = self.data.data["level_roles"].get(str(level + 1))
-                    remove = discord.utils.get(member.guild.roles, id=remove)
-                    if remove:
-                        await member.remove_roles(remove)
+                    # # 不要になったロールを削除
+                    # remove = self.data.data["level_roles"].get(str(level - 1))
+                    # remove = discord.utils.get(member.guild.roles, id=remove)
+                    # if remove:
+                    #     await member.remove_roles(remove)
+                    # remove = self.data.data["level_roles"].get(str(level + 1))
+                    # remove = discord.utils.get(member.guild.roles, id=remove)
+                    # if remove:
+                    #     await member.remove_roles(remove)
             self.data.data["userdata"][str(member.id)]["level"] = level
         await self.data.set_data()
 
@@ -99,9 +103,17 @@ class experience:
         # time-stampとの差がcache_time以上なら
         if int(time.time()) - self.sort_objs["time-stamp"] > cache_time:
             self.sort_objs["time-stamp"] = int(time.time())
-            self.data.data["userdata"] = dict(sorted(self.data.data["userdata"].items(), key=lambda x: x[1]["chat_experience"] + x[1]["vc_experience"] + x[1]["role_experience"], reverse=True))
+            self.data.data["userdata"] = dict(sorted(self.data.data["userdata"].items(), key=lambda x: x[1]["chat_experience"] + x[1]["vc_experience"] + x[1]["role_experience"] + x[1]["other_experience"], reverse=True))
             self.sort_objs["data"] = self.data.data["userdata"]
         return self.sort_objs["data"]
+    
+    async def add_other_exp(self, member_id, exp: int):
+        if not self.data.data["userdata"].get(str(member_id)):
+            await self.data.make_user(member_id)
+        if not self.data.data["userdata"][str(member_id)].get("other_experience"):
+            self.data.data["userdata"][str(member_id)]["other_experience"] = 0
+        self.data.data["userdata"][str(member_id)]["other_experience"] += exp
+        await self.data.set_data()
 
     async def get_rank(self,member_id):
         """
@@ -128,7 +140,10 @@ class experience:
     async def get_exp(self,member_id):
         if str(member_id) not in self.data.data["userdata"]:
             return 0
-        return self.data.data["userdata"][str(member_id)]["role_experience"], self.data.data["userdata"][str(member_id)]["vc_experience"], self.data.data["userdata"][str(member_id)]["chat_experience"]
+        # otherが存在しないなら作る
+        if not self.data.data["userdata"][str(member_id)].get("other_experience"):
+            self.data.data["userdata"][str(member_id)]["other_experience"] = 0
+        return self.data.data["userdata"][str(member_id)]["role_experience"], self.data.data["userdata"][str(member_id)]["vc_experience"], self.data.data["userdata"][str(member_id)]["chat_experience"], self.data.data["userdata"][str(member_id)]["other_experience"]
 
     def __len__(self):
         return len(self.data.data["userdata"])
